@@ -8,3 +8,19 @@ C:\Users\Seth\Documents\Visual Studio 2015\Projects\Effay\Effay\obj\Debug\Effay.
 C:\Users\Seth\Documents\Visual Studio 2015\Projects\Effay\Effay\obj\Debug\Effay.pdb
 C:\Users\Seth\Documents\Visual Studio 2015\Projects\Effay\Effay\bin\Debug\MaterialSkin.dll
 C:\Users\Seth\Documents\Visual Studio 2015\Projects\Effay\Effay\obj\Debug\Effay.mainForm.resources
+C:\Users\Seth\Desktop\effay\Effay\bin\Debug\Effay.exe.config
+C:\Users\Seth\Desktop\effay\Effay\obj\Debug\Effay.exe
+C:\Users\Seth\Desktop\effay\Effay\obj\Debug\Effay.pdb
+C:\Users\Seth\Desktop\effay\Effay\bin\Debug\Effay.exe
+C:\Users\Seth\Desktop\effay\Effay\bin\Debug\Effay.pdb
+C:\Users\Seth\Desktop\effay\Effay\obj\Debug\Effay.csprojResolveAssemblyReference.cache
+C:\Users\Seth\Desktop\effay\Effay\obj\Debug\Effay.mainForm.resources
+C:\Users\Seth\Desktop\effay\Effay\obj\Debug\Effay.Properties.Resources.resources
+C:\Users\Seth\Desktop\effay\Effay\obj\Debug\Effay.csproj.GenerateResource.Cache
+C:\Users\Seth\Desktop\effay\Effay\bin\Debug\Xenon.dll
+C:\Users\Seth\Desktop\effay\Effay\bin\Debug\Xenon.pdb
+C:\Users\Seth\Desktop\effay\Effay\bin\Debug\Xenon.xml
+C:\Users\Seth\Desktop\effay\Effay\bin\Debug\ClosedXML.dll
+C:\Users\Seth\Desktop\effay\Effay\bin\Debug\DocumentFormat.OpenXml.dll
+C:\Users\Seth\Desktop\effay\Effay\bin\Debug\ClosedXML.pdb
+C:\Users\Seth\Desktop\effay\Effay\obj\Debug\Citadel.msgbox.resources
