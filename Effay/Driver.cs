@@ -24,6 +24,7 @@ namespace Effay
         public float AvgCdt { get; set; }
         public float OneAndTwo { get; set; }
         public int RunCount { get; set; }
+        public float Efficiency { get; set; }
 
         public void SetAttrib(int attrib, string value)
         {
@@ -50,6 +51,11 @@ namespace Effay
                 }
             }
             catch { }
+        }
+
+        public bool Empty()
+        {
+            return (RackIn == 0 && RackStore == 0 && AvgRack == 0);
         }
 
         public object GetAttrib(int attrib)
