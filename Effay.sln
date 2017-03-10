@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Effay", "Effay\Effay.csproj", "{BE1DA153-3DF5-43FF-93BA-EA31FE0E2650}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "EffaySetup", "EffaySetup\EffaySetup.vdproj", "{F5B0F2F3-ABD4-411F-B287-DEFEB849294E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,8 @@ Global
 		{BE1DA153-3DF5-43FF-93BA-EA31FE0E2650}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE1DA153-3DF5-43FF-93BA-EA31FE0E2650}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE1DA153-3DF5-43FF-93BA-EA31FE0E2650}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5B0F2F3-ABD4-411F-B287-DEFEB849294E}.Debug|Any CPU.ActiveCfg = Debug
+		{F5B0F2F3-ABD4-411F-B287-DEFEB849294E}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

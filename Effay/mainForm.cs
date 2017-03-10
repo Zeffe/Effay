@@ -20,7 +20,7 @@ namespace Effay
         Dictionary<int, Attribute> attributes = new Dictionary<int, Attribute>();
         Dictionary<Xenon.ThirteenCheckBox, NumericUpDown> Weights = new Dictionary<Xenon.ThirteenCheckBox, NumericUpDown>();
         bool started = false;
-        Decimal percentUsed = 99.97M;
+        Driver selectedDriver = null;
 
         public mainForm()
         {
@@ -58,6 +58,8 @@ namespace Effay
                 tempWeight.Increment = 1;
                 tempWeight.Value = 7.69M;
                 tempWeight.TextAlign = HorizontalAlignment.Right;
+                tempWeight.Tag = checkbox.Key;
+                tempWeight.ValueChanged += new EventHandler(nmChange);
 
                 checkbox.Value.Parent.Controls.Add(tempWeight);
                 checkbox.Value.CheckedChanged += new Xenon.ThirteenCheckBox.CheckedChangedEventHandler(checkChange);
@@ -65,6 +67,22 @@ namespace Effay
                 attributes.Add(checkbox.Key, new Attribute(checkbox.Key, 1));
                 Weights.Add(checkbox.Value, tempWeight);
             }
+        }
+
+        private void nmChange(object sender, EventArgs e)
+        {
+            NumericUpDown tempWeight = sender as NumericUpDown;
+            int attrib = Convert.ToInt32(tempWeight.Tag);
+
+            if (attributes.ContainsKey(attrib))
+            {
+                attributes[attrib] = new Attribute(attrib, Convert.ToSingle(tempWeight.Value));
+            } else
+            {
+                attributes.Add(attrib, new Attribute(attrib, Convert.ToSingle(tempWeight.Value)));
+            }
+
+            try { populateList(openFileDialog1.FileName); } catch { }
         }
 
         private void checkChange(object sender)
@@ -75,7 +93,7 @@ namespace Effay
 
             if (tempCheck.Checked && !attributes.ContainsKey(attrib))
             {
-                attributes.Add(attrib, new Attribute(attrib, 1));
+                attributes.Add(attrib, new Attribute(attrib, 7.69f));
             } else if (!tempCheck.Checked)
             {
                 attributes.Remove(attrib);
@@ -91,31 +109,39 @@ namespace Effay
 
             int[] emptyColumns = { 18, 16, 6, 4, 1 };
 
-            using (cXML.XLWorkbook workbook = new cXML.XLWorkbook(filePath))
-            {
-                var worksheet = workbook.Worksheets.First();
-                var range = worksheet.RangeUsed();
+            try {
 
-                for (int i = 1; i < range.RowCount() + 1; i++)
+                using (cXML.XLWorkbook workbook = new cXML.XLWorkbook(filePath))
                 {
-                    drivers.Add(new Driver());
-                    int skipped = 0;
-                    for (int j = 1; j < range.ColumnCount() + 2; j++)
+                    var worksheet = workbook.Worksheets.First();
+                    var range = worksheet.RangeUsed();
+
+                    for (int i = 1; i < range.RowCount() + 1; i++)
                     {
-                        if (!emptyColumns.Contains(j) && (!String.IsNullOrEmpty(worksheet.Cell(i, 3).Value.ToString())) && worksheet.Cell(i, 3).Value.ToString() != "Driver")
+                        drivers.Add(new Driver());
+                        int skipped = 0;
+                        for (int j = 1; j < range.ColumnCount() + 2; j++)
                         {
-                            drivers[i - 1].SetAttrib(j - skipped, worksheet.Cell(i, j).Value.ToString());
-                            //MessageBox.Show((j - skipped).ToString() + "::" + worksheet.Cell(i, j).Value.ToString());
-                        } else if (started && !emptyColumns.Contains(j) && String.IsNullOrEmpty(worksheet.Cell(i, 3).Value.ToString()))
-                        {
-                            averageDriver.SetAttrib(j - skipped, worksheet.Cell(i, j).Value.ToString());
-                        } else
-                        {
-                            skipped++;
+                            if (!emptyColumns.Contains(j) && (!String.IsNullOrEmpty(worksheet.Cell(i, 3).Value.ToString())) && worksheet.Cell(i, 3).Value.ToString() != "Driver")
+                            {
+                                drivers[i - 1].SetAttrib(j - skipped, worksheet.Cell(i, j).Value.ToString());
+                                //MessageBox.Show((j - skipped).ToString() + "::" + worksheet.Cell(i, j).Value.ToString());
+                            } else if (started && !emptyColumns.Contains(j) && String.IsNullOrEmpty(worksheet.Cell(i, 3).Value.ToString()))
+                            {
+                                averageDriver.SetAttrib(j - skipped, worksheet.Cell(i, j).Value.ToString());
+                            } else
+                            {
+                                skipped++;
+                            }
                         }
+                        started = averageDriver.Empty();
                     }
-                    started = averageDriver.Empty();
                 }
+
+            } catch
+            {
+                msgbox err = new msgbox("Error, selected Excel file is currently being used by another program.", "Error", 1);
+                err.Show();
             }
 
             for (int i = drivers.Count - 1; i >= 0; i--)
@@ -128,17 +154,19 @@ namespace Effay
             {
                 try
                 {
-                    int skip = 0;
+                    float skip = 0;
                     float efficiency = 0;
+                    float divideBy = 0;
 
-                    if (attributes.ContainsKey(8)) skip++;      // Skip NegWait
+                    if (attributes.ContainsKey(8)) skip += attributes[8].weight;     // Skip NegWait
 
                     foreach (int attrib in attributes.Keys)
                     {
-                        efficiency += CompareAttrib(attrib, driver, averageDriver);
+                        efficiency += CompareAttrib(attrib, driver, averageDriver) * (attributes[attrib].weight);
+                        divideBy += attributes[attrib].weight;
                     }
 
-                    efficiency /= attributes.Count - skip;
+                    efficiency /= divideBy - skip;
                     efficiency *= 100;
                     driver.Efficiency = efficiency;
                 } catch
@@ -245,6 +273,49 @@ namespace Effay
                     err.Show();
                 }
             } 
+        }
+
+        private void listDrivers_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int index = listDrivers.SelectedIndex;
+
+            if (index != -1)
+            {
+                thirteenTabControl1.SelectedTab = tabPage3;
+                selectedDriver = drivers[index];
+                lblSelected.Text = selectedDriver.Name;
+                lblStore.Text = selectedDriver.Store.ToString();
+            }
+        }
+
+        private void checkAll_CheckedChanged(object sender)
+        {
+            foreach (KeyValuePair<int, Xenon.ThirteenCheckBox> checkbox in checkBoxes)
+            {
+                checkbox.Value.Checked = checkAll.Checked;
+                Weights[checkbox.Value].Enabled = checkAll.Checked;
+            }     
+        }
+
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            foreach (NumericUpDown tempWeight in Weights.Values)
+            {
+                tempWeight.Value = 7.69M;
+            }
+        }
+
+        private void cmbAttribute_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int index = cmbAttribute.SelectedIndex;
+            int attribute = cmbAttribute.SelectedIndex + 3;
+
+            if (index != -1 && selectedDriver != null)
+            {
+                txtDriver.Text = selectedDriver.GetAttrib(attribute).ToString();
+                txtAverage.Text = averageDriver.GetAttrib(attribute).ToString();
+                txtEfficiency.Text = (CompareAttrib(attribute, selectedDriver, averageDriver) * 100).ToString() + "%";
+            }
         }
     }
 }
